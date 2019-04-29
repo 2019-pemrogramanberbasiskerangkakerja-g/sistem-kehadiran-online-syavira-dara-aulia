@@ -58,6 +58,7 @@ app.post('/registrasi', function(request, response) {
 				request.session.nama = nama;
 				response.redirect('/home');
 			} else {
+				request.session.loggedin = true;
 				response.redirect('/home');
 				console.log("Berhasil menambahkan " + nama + " pada database");
 			}			
@@ -98,13 +99,13 @@ app.post('/auth', function(req, res) {
 //SUCCESS LOGIN
 app.get('/home', function(req, res) {
 	if (req.session.loggedin) {
-		connection.query('SELECT * FROM mahasiswa WHERE nrp = ?', [req.session.nrp], function(error, results, fields){
-			console.log(results);
-			if (error) {
-				res.send(error);
-			}
-			res.render('home.ejs', {data: results});
-		});
+		//connection.query('SELECT * FROM mahasiswa WHERE nrp = ?', [req.session.nrp], function(error, results, fields){
+			//console.log(results);
+			//if (error) {
+			//	res.send(error);
+			//}
+			res.render('home.ejs');
+		//});
 		
 		//res.send('Selamat Datang, ' + req.session.nama + '!');
 		//res.redirect('/succeslogin');
