@@ -46,6 +46,38 @@ exports.findKuliah = function(req, res) {
     });
 };
 
+exports.findKuliahPert = function(req, res) {
+    
+    var fk_kode_mk = req.params.fk_kode_mk;
+    var id_pertemuan = req.params.id_pertemuan;
+
+    connection.query('SELECT * FROM jadwal_kuliah where fk_kode_mk = ? AND id_pertemuan= ?',
+    [ fk_kode_mk, id_pertemuan ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.findKuliahKode = function(req, res) {
+    
+    var nrp = req.params.nrp;
+    var kode_mk = req.params.kode_mk;
+
+    connection.query('SELECT * FROM peserta_kelas where nrp = ? AND kode_mk = ?',
+    [ nrp, kode_mk ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
 exports.findKuliahSmt = function(req, res) {
     
     var nrp = req.params.nrp;
@@ -53,11 +85,11 @@ exports.findKuliahSmt = function(req, res) {
 
     connection.query('SELECT * FROM peserta_kelas where nrp = ? AND semester = ?',
     [ nrp,semester ], 
-    function (error, rows, fields){
+    function (error, result){
         if(error){
             console.log(error)
         } else{
-            response.ok(rows, res)
+            res.send(JSON.stringify(results));
         }
     });
 };

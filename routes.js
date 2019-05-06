@@ -12,7 +12,13 @@ module.exports = function(app) {
     app.route('/rekap/:kode_mk')
         .get(absenonline.findKuliah);
 
-     app.route('/rekapmahasiswa/:nrp/:semester')
+    app.route('/rekap/:fk_kode_mk/:id_pertemuan')
+        .get(absenonline.findKuliahPert);
+
+    app.route('/rekapmahasiswa/:nrp/:kode_mk')
+        .get(absenonline.findKuliahKode);        
+
+    app.route('/rekapmahasiswa/:nrp/:semester')
         .get(absenonline.findKuliahSmt);
 
     app.route('/tambahmahasiswa')
