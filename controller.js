@@ -86,10 +86,12 @@ exports.findKuliahSmt = function(req, res) {
     connection.query('SELECT * FROM peserta_kelas where nrp = ? AND semester = ?',
     [ nrp,semester ], 
     function (error, result){
+        console.log(nrp);
         if(error){
             console.log(error)
         } else{
-            res.send(JSON.stringify(results));
+            callback(result);
+            res.send(JSON.stringify(result));
         }
     });
 };
