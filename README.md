@@ -13,10 +13,10 @@ PROGRES:
   <li>Dara Tursina    (5115100707)</li>
 <ol>
 
-<h3><a href="About" </a></h3>
+<h3>About</h3>
 Menggunakan Node.js, Express dan MySQL database
 
-<h3><a href="Run" </a></h3>
+<h3>Run</h3>
 <ol>
   <li>Install <code>npm install express</code> </li>
   <li>Install <code>npm install mysql</code></li>
