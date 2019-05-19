@@ -1,0 +1,5 @@
+login
+register (/tambahmahasiswa)
+rekap mata kuliah (/rekapmahasiswa/:nrp/:kode_matkul)
+tambahmatkul + nampilin daftar matkul
+absen
