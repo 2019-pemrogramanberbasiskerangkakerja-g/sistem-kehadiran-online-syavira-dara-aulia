@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-		<title>Login Kehadiran</title>
+		<title>Sistem Presensi Online</title>
 		<style>
 		.login-form {
 			width: 300px;
@@ -40,26 +41,37 @@
 		</style>
 	</head>
 	<body>
-		<div class="login-form">
-			<h1>Login Form</h1>
-			<form action="auth" method="POST">
+		<!-- <div class="login-form"> -->
+			
+			<!-- <form action="auth" method="POST">
 				<input type="text" name="nrp" placeholder="NRP" required>
 				<input type="password" name="password" placeholder="Password" required>
-				<!--<div class="radio">
-      				<label><input type="radio" name="optradio" value="">PBKK G</label>
-    			</div>
-    			<div class="radio">
-      				<label><input type="radio" name="optradio" value="">PBKK H</label>
-    			</div>-->
-    			<!-- <label class="checkbox-inline">
-      				<input type="checkbox" value="">PBKK G
-    			</label>
-    			<label class="checkbox-inline">
-      				<input type="checkbox" value="">PBKK H
-    			</label> -->
+				
 				<input type="submit">
 				<a href="/regis">Registrasi?</a>
-			</form>
-		</div>
+			</form> -->
+			<div class="container"><h1>Kehadiran</h1>           
+			  <table class="table table-hover">
+			    <thead>
+			      <tr>
+			        <th>NRP</th>
+			        <th>Id Jadwal</th>
+			        <th>Jam Masuk</th>
+			        <th>Status</th>
+			      </tr>
+			    </thead>
+			    <tbody>{% for item in results %}
+			      <tr>
+			      	<td class="counterCell"> </td>
+			        <td>{{item.}}</td>
+			        <td>{{item.}}</td>
+			        <td>{{item.}}</td>
+			      </tr>
+			      {% endfor %}
+			    </tbody>
+			  </table>
+			</div>
+
+		<!-- </div> -->
 	</body>
 </html>
