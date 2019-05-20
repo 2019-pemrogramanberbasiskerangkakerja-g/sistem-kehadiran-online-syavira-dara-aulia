@@ -100,13 +100,13 @@ app.post('/auth', function(req, res) {
 //SUCCESS LOGIN
 app.get('/home', function(req, res) {
 	if (req.session.loggedin) {
-		//connection.query('SELECT * FROM mahasiswa WHERE nrp = ?', [req.session.nrp], function(error, results, fields){
+		connection.query('SELECT * FROM mahasiswa WHERE nrp = ?', [req.session.nrp], function(error, results, fields){
 			//console.log(results);
 			//if (error) {
 			//	res.send(error);
 			//}
 			res.render('home.ejs');
-		//});
+		});
 		
 		//res.send('Selamat Datang, ' + req.session.nama + '!');
 		//res.redirect('/succeslogin');

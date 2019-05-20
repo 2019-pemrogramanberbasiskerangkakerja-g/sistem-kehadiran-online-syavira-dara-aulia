@@ -5,7 +5,10 @@ module.exports = function(app) {
 
     app.route('/')
         .get(absenonline.index);
-
+    app.route('/login')
+        .get(absenonline.login);
+    app.route('/registrasi')
+        .get(absenonline.registrasi);
     app.route('/users')
         .get(absenonline.users);
 
@@ -32,4 +35,6 @@ module.exports = function(app) {
 
     app.route('/tambahpeserta/:nrp/:kode_mk')
         .post(absenonline.createMhsKuliah);
+    app.route('/absen')
+        .post(absenonline.absen);
 };

@@ -21,15 +21,15 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
-app.use(
-    session({
-        secret: "user session"
-    })
-)
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
 
 app.set('view engine', 'ejs')
 
-app.get('/', checkSignIn, (req, res) => {
+app.get('/users', checkSignIn, (req, res) => {
     //console.log(Users)
     agent.get(host)
         .then(
@@ -46,7 +46,6 @@ app.get('/', checkSignIn, (req, res) => {
                                 console.log(nama);
                                 break;
                             }
-
                         }
                         //console.log(response.body.matkul)
                         res.render('home.ejs', { nrp: req.session.mahasiswa.nrp, nama: nama })
@@ -55,19 +54,9 @@ app.get('/', checkSignIn, (req, res) => {
             }
         )
 })
-
-app.get('/login', (req, res) => {
-    if (req.session.error != null) {
-        // console.log(req.session.error);
-        req.session.error = null;
-        res.render('login.ejs', { message: "hai" })
-
-    }
-    else {
-        res.render('login.ejs', { message: "" })
-    }
-
-})
+app.get('/login', function(req, res) {
+    res.render('login.ejs');
+});
 
 app.get('/register', (req, res) => {
     res.render('register.ejs')

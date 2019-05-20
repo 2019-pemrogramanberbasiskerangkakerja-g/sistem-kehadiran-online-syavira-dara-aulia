@@ -14,7 +14,12 @@ var connection = mysql.createConnection({
 connection.connect(function (err){
     if(err) throw err;
 });
-
+exports.login = function(req, res) {
+    res.render('login.ejs')
+}
+exports.registrasi = function(req, res) {
+    res.render('registrasi.ejs');
+}
 // module.exports = connection;
 //untuk menampilkan seluruh daftar mahasiswa
 exports.users = function(req, res) {
@@ -109,6 +114,7 @@ exports.createUsers = function(req, res) {
             console.log(error)
         } else{
             response.ok("Berhasil menambahkan Mahasiswa!", res)
+            redirect('home.ejs')
         }
     });
 };
@@ -165,4 +171,20 @@ exports.createMhsKuliah = function(req, res) {
     });
 };
 
+exports.absen = function(req, res) {
+    var nrp = req.body.nrp;
+    var id_jadwal = req.body.id_jadwal;
+    var jam_masuk = req.body.jam_masuk;
+    var status = req.body.status;
+
+    connection.query('INSERT INTO log_absen(nrp, id_jadwal, jam_masuk, status) values (?,?,?,?)',
+    [nrp, id_jadwal, jam_masuk, status],
+    function (error, rows, fields){
+        if (error) {
+            console.log(error)
+        } else {
+            response.ok("Berhasil masuk kelas", res)
+        }
+    });
+};
 
