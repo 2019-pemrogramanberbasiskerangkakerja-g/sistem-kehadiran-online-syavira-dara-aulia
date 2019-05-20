@@ -38,3 +38,87 @@ Menggunakan Node.js, Express, MySQL database, dan ejs sebagai View Engine-nya
 <ol><code>POST</code>/tambahpeserta:(sent via body: id mata kuliah, nrp) tambah user mahasiswa ke mata kuliah</ol>
 <ol><code>POST</code>/tambahmatkul (sent via body:id mata kuliah, nama mata kuliah,semester):tambah mata kuliah baru</ol>
 <ol><code>POST</code>/tambahjadwal (sent via body: id mata kuliah, pertemuan ke, jam masuk, jam selesai: tambah jadwal pertemuan untuk kuliah</ol>
+
+testing : <code>localhost:5006</code>
+
+## HASIL TESTING API
+
+1. <code>GET</code>/users
+Parameter ini digunakan untuk memperoleh daftar user e.g. : <code>localhost:5006/users</code>
+
+![users](/image/users.PNG)
+
+2. <code>GET</code>/rekap/idmatakuliah
+Parameter ini digunakan untuk memperoleh rekap kehadiran per matakuliah e.g. : <code>localhost:5006/MK001</code>
+
+![users](/image/rekap_matkul.PNG)
+
+3. <code>GET</code>/rekap/idmatakuliah/pertemuanke
+Parameter ini digunakan untuk memperoleh rekap kehadiran per matakuliah per pertemuan e.g. : <code>localhost:5006/MK001/1</code>
+
+![users](/image/rekap_matkul_pertemuan.PNG)
+
+4. <code>GET</code>/rekapmahasiswa/nrp/idmatakuliah
+Parameter ini digunakan untuk memperoleh rekap kehadiran per mahasiswa pada tiap matakuliah e.g. : <code>localhost:5006/05111540000012/MK001</code>
+
+![users](/image/rekapmahasiswa.PNG)
+
+5. <code>GET</code>/rekapmahasiswa/nrp/idsemester
+Parameter ini digunakan untuk memperoleh rekap kehadiran per mahasiswa pada semester tertentu e.g. : <code>localhost:5006/05111540000012/6</code>
+
+![users](/image/rekapmahasiswa2.PNG)
+
+6. <code>POST</code>/tambahmahasiswa
+Parameter ini digunakan untuk menambah record mahasiswa baru
+
+data yang di send via body adalah :
+
+![users](/image/tambahmahasiswa.PNG)
+
+ketika berhasil menambahkan, maka response akan OK/200
+
+![users](/image/yestambahmahasiswa.PNG)
+
+7. <code>POST</code>/tambahpeserta
+Parameter ini digunakan untuk menambah record peserta kelas baru
+
+data yang di send via body adalah :
+
+![users](/image/tambahpeserta.PNG)
+
+ketika berhasil menambahkan, maka response akan 200/OK
+
+![users](/image/yestambahpeserta.PNG)
+
+8. <code>POST</code>/tambahmatkul
+Parameter ini digunakan untuk menambah record matakuliah baru
+
+data yang di send via body adalah :
+
+![users](/image/tambahmatkul.PNG)
+
+ketika berhasil menambahkan, maka response akan 200/OK
+
+![users](/image/yestambahmatkul.PNG)
+
+9. <code>POST</code>/tambahjadwal
+Parameter ini digunakan untuk menambah record jadwal baru
+
+data yang di send via body adalah :
+
+![users](/image/tambahjadwal.PNG)
+
+ketika berhasil menambahkan, maka response akan 200/OK
+
+![users](/image/yestambahjadwal.PNG)
+
+10. <code>POST</code>/absen
+Parameter ini digunakan untuk menambah record absen
+
+data yang di send via body adalah :
+
+![users](/image/absen.PNG)
+
+ketika berhasil menambahkan, maka response akan 200/OK
+
+![users](/image/yesabsen.PNG)
