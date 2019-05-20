@@ -1,0 +1,44 @@
+<% include partials/header.ejs %>
+<br><br><br>
+<div class="container"><h1>Kehadiran</h1>           
+			  <table class="table table-hover">
+			    <thead>
+			      <tr>
+			        <th>NRP</th>
+			        <th>Id Jadwal</th>
+			        <th>Jam Masuk</th>
+			        <th>Status</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr>
+			      <td class="counterCell"> </td>
+			      	<td></td>
+			      	<td></td>
+			      	<td></td>
+			      	<td></td>
+			        
+			      </tr>
+			    
+			    </tbody>
+			  </table>
+			  <button class="open-button" onclick="openForm()">Tambah Matkul</button>
+
+				<div class="form-popup" id="myForm">
+				  <form action="daftarkls2" class="form-container" method="POST">
+				  
+				    <h1>Tambah</h1>
+
+				    <label for="nama_matkul"><b>MataKuliah</b></label>
+				    <input type="text" placeholder="Nama MataKuliah" name="nama_matkul" required>
+
+				    <label for="semester"><b>Semester</b></label>
+				    <input type="text" placeholder="Semester" name="semester" required>
+
+				    <button type="submit" class="btn">Tambah</button>
+				    <button type="button" class="btn cancel" onclick="closeForm()">Batal</button>
+				  </form>
+				</div>
+		</div>
+</body>
+</html>

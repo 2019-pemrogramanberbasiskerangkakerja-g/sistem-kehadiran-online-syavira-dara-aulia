@@ -1,0 +1,50 @@
+<% include partials/header.ejs %>
+<br><br><br>
+<div class="container"><h1>Ini rekap pertemuan ke? findkuliah pert</h1>           
+			  <table class="table table-hover">
+			    <thead>
+			      <tr>
+			        <th>Kode MataKuliah</th>
+			        <th>Pertemuan</th>
+			        <th>Jam Mulai</th>
+			        <th>Jam Selesai</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr>
+			      <td class="counterCell"> </td>
+			      	<td></td>
+			      	<td></td>
+			      	<td></td>
+			      	<td></td>
+			        
+			      </tr>
+			    
+			    </tbody>
+			  </table>
+			  <button class="open-button" onclick="openForm()">Tambah Matkul</button>
+
+				<div class="form-popup" id="myForm">
+				  <form action="daftarjadwal2" class="form-container" method="POST">
+				  
+				    <h1>Tambah Jadwal</h1>
+
+				    <label for="kode_matkul"><b>Kode MataKuliah</b></label>
+				    <input type="text" placeholder="Kode MataKuliah" name="kode_matkul" required>
+
+				    <label for="pertemuan_ke"><b>Pertemuan</b></label>
+				    <input type="text" placeholder="Pertemuan" name="pertemuan_ke" required>
+
+				    <label for="start"><b>Jam Mulai</b></label>
+				    <input type="datetime-local" placeholder="Jam Mulai" name="start" required>
+
+				    <label for="end"><b>Jam Selesai</b></label>
+				    <input type="datetime-local" placeholder="Jam Selesai" name="end" required>
+
+				    <button type="submit" class="btn">Tambah</button>
+				    <button type="button" class="btn cancel" onclick="closeForm()">Batal</button>
+				  </form>
+				</div>
+		</div>
+</body>
+</html>
