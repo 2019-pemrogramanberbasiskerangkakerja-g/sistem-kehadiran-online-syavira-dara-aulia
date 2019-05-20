@@ -24,7 +24,7 @@ Menggunakan Node.js, Express, MySQL database, dan ejs sebagai View Engine-nya
 <ol>
   <li>Install <code>npm install express</code> </li>
   <li>Install <code>npm install mysql</code></li>
-  <li>Run <code>app2.js</code></li>
+  <li>Run <code>app.js</code></li>
 </ol>
 
 <h3>Parameter API</h3>
