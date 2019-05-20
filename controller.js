@@ -14,12 +14,18 @@ var connection = mysql.createConnection({
 connection.connect(function (err){
     if(err) throw err;
 });
+<<<<<<< HEAD
 exports.login = function(req, res) {
     res.render('login.ejs')
 }
 exports.registrasi = function(req, res) {
     res.render('registrasi.ejs');
 }
+=======
+
+
+
+>>>>>>> 29a4733c0ad16839d24e70a021fef074a84d3ce5
 // module.exports = connection;
 //untuk menampilkan seluruh daftar mahasiswa
 exports.users = function(req, res) {
@@ -32,6 +38,67 @@ exports.users = function(req, res) {
     });
 };
 
+exports.login = function(req, res){
+    res.render('login.ejs');
+};
+
+exports.regis = function(req, res){
+    res.render('registrasi.ejs');
+}
+
+exports.succeslogin = function(req, res){
+    res.render('home.ejs',{nrp:req.session.nrp});
+}
+
+exports.failed = function(req, res){
+    res.render('failed_login.ejs');
+}
+
+exports.authlog = function(req, res){
+
+    var nrp = req.body.nrp;
+    var password = req.body.password;
+    if (nrp && password) {
+        connection.query('SELECT * FROM mahasiswa WHERE nrp = ? AND password = ?', [nrp, password], function(error, results, fields) {
+            //console.log(results);
+            if (results.length > 0) {
+                req.session.loggedin = true;
+                req.session.nrp = nrp;
+                // req.session.nama = nama;
+                Object.keys(results).forEach(function(key) {
+                    var row = results[key];
+                    req.session.nama = row.nama;
+                    console.log(row.nama + " berhasil login")
+                });
+                //console.log(results);
+
+                res.redirect('/home');
+            } else {
+                res.send('NRP atau Password salah!');
+            }           
+            res.end();
+        });
+    } else {
+        res.send('Mohon masukkan NRP dan password anda!');
+        res.end();
+    }
+};
+
+exports.succlogin = function(req, res){
+    if (req.session.loggedin) {
+        res.render('home.ejs',{nama:req.session.nama});
+        console.log(req.session.nama);
+        } else {
+            res.render('failed_login.ejs');
+    }
+    res.end();
+
+};
+
+exports.logout = function(req, res){
+    req.session.loggedin=false;
+    res.redirect('/login');
+}
 exports.index = function(req, res) {
     response.ok("Node JS RESTful side for Online Attendance!", res)
 };
@@ -101,6 +168,53 @@ exports.findKuliahSmtr = function(req, res) {
     });
 };
 
+
+// root.post('/mahasiswa/absensi', function(request, response) {
+//   var id = request.body.id_user;
+//   var matkul = request.body.id_tran_matkul;
+//   var status = request.body.status;
+//   var date = new Date();
+
+//   db.query('INSERT INTO transaksi_user (id_user,id_tran_matkul,waktu,status) values (?,?,?,?)',
+//    [id,matkul,date,status], function (error, results, fields) {
+//     if (error){
+//       console.log(error);
+//     }
+//     response.redirect('/mahasiswa');
+//   });
+// });
+
+
+// root.post('/absen/:ruang/:nrp', function(request, response) {
+//   var ruangan = request.params.ruang;
+//   var nrp_nip = request.params.nrp;
+//   var status = "2";
+//   var date = new Date();
+
+//   db.query('SELECT u.nrp_nip, tm.ruangan,tm.id_tran_matkul FROM daftar_peserta d, matkul m, transaksi_matkul tm, user u WHERE m.id_matkul = d.id_matkul AND u.id_user=d.id_user AND tm.id_matkul = m.id_matkul AND u.nrp_nip=? AND tm.ruangan=?',
+//    [nrp_nip,ruangan], function (error, results, fields) {
+//     if (error){
+//       console.log(error);
+//       response.status(500).json({ error: 'Internal Server Error' });
+//     }
+//     if (results.length == 0 ){
+//       response.status(404).json({ error: 'Peserta tidak terdaftar dalam kelas' });
+//     }else{
+//       console.log(results);
+//       var matkul = results[0].id_tran_matkul;
+//       db.query('INSERT INTO transaksi_user (id_user,id_tran_matkul,waktu,status) values (?,?,?,?)',
+//        [nrp_nip,matkul,date,status], function (error, results, fields) {
+//         if (error){
+//           console.log(error);
+//           res.status(500).json({ error: 'Internal Server Error' });
+//         }else{
+//           res.status(200).json({ OK: 'Berhasil melakukan absensi' });
+//         }
+//       });
+//     }
+//   });
+// });
+
 exports.createUsers = function(req, res) {
     
     var nrp = req.body.nrp;
@@ -110,13 +224,27 @@ exports.createUsers = function(req, res) {
     connection.query('INSERT INTO mahasiswa (nrp,nama,password) values (?,?,?)',
     [ nrp, nama, password ], 
     function (error, rows, fields){
+<<<<<<< HEAD
         if(error){
             console.log(error)
         } else{
             response.ok("Berhasil menambahkan Mahasiswa!", res)
             redirect('home.ejs')
         }
+=======
+        if (rows.length > 0) {
+                req.session.loggedin = true;
+                req.session.nama = nama;
+                res.redirect('/home');
+            } else {
+                req.session.loggedin = true;
+                res.redirect('/home');
+                console.log("Berhasil menambahkan " + nama + " pada database");
+            }           
+            res.end();
+>>>>>>> 29a4733c0ad16839d24e70a021fef074a84d3ce5
     });
+    
 };
 
 exports.createMatkul = function(req, res) {

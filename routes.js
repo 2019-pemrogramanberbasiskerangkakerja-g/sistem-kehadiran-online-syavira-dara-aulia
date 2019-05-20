@@ -3,6 +3,27 @@
 module.exports = function(app) {
     var absenonline = require('./controller');
 
+    app.route('/login')
+        .get(absenonline.login);
+    app.route('/regis')
+        .get(absenonline.regis);
+    app.route('/registrasi')
+        .post(absenonline.createUsers);
+
+    app.route('/succeslogin')
+        .get(absenonline.succeslogin);
+
+    app.route('/failed')
+        .get(absenonline.failed);
+    app.route('/auth')
+        .post(absenonline.authlog);
+
+    app.route('/home')
+        .get(absenonline.succlogin);
+
+    app.route('/logout')
+        .get(absenonline.logout);
+
     app.route('/')
         .get(absenonline.index);
     app.route('/login')
