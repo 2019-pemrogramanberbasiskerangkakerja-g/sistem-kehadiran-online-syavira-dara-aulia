@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 20, 2019 at 02:38 PM
+-- Generation Time: May 20, 2019 at 03:19 PM
 -- Server version: 10.1.28-MariaDB
 -- PHP Version: 7.1.11
 
@@ -75,7 +75,9 @@ CREATE TABLE `log_absen` (
 
 INSERT INTO `log_absen` (`id_log`, `id_jadwal`, `nrp`, `jam_masuk`, `status`) VALUES
 (1, 1, '05111540000002', '2019-05-20 12:10:13', 1),
-(2, 1, '05111540000012', '2019-05-20 12:10:13', 1);
+(2, 1, '05111540000012', '2019-05-20 12:10:13', 1),
+(3, 1, '05111540000001', '2019-05-20 12:46:33', 1),
+(4, 7, '05111540000005', '2019-05-20 12:48:03', 1);
 
 -- --------------------------------------------------------
 
@@ -86,7 +88,7 @@ INSERT INTO `log_absen` (`id_log`, `id_jadwal`, `nrp`, `jam_masuk`, `status`) VA
 CREATE TABLE `mahasiswa` (
   `nrp` varchar(14) NOT NULL,
   `nama` varchar(100) NOT NULL,
-  `password` text NOT NULL
+  `password` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -205,7 +207,7 @@ ALTER TABLE `jadwal_kelas`
 -- AUTO_INCREMENT for table `log_absen`
 --
 ALTER TABLE `log_absen`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `peserta`
