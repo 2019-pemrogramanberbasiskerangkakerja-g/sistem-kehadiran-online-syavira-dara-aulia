@@ -20,6 +20,10 @@ PROGRES:
 <h3>About</h3>
 Menggunakan Node.js, Express, MySQL database, dan ejs sebagai View Engine-nya
 
+<h3>Database </h3>
+
+![users](/image/database.PNG)
+
 <h3>Run</h3>
 <ol>
   <li>Install <code>npm install express</code> </li>
