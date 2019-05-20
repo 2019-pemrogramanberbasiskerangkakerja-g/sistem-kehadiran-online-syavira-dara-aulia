@@ -1,343 +1,270 @@
 'use strict';
 
-const bodyParser = require('body-parser')
-const express = require('express')
-const session = require('express-session')
-const agent = require('superagent')
+var response = require('./res');
+// var connection = require('./conn');
+var mysql = require('mysql');
 
-const app = express()
-var request = require('request');
+var connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "absenonline"
+});
 
-// const apiHost = 'https://pbkk-online-absen-api.herokuapp.com'
-const host = 'http://localhost:5006'
-var path = require("path");
+connection.connect(function (err){
+    if(err) throw err;
+});
 
-//let Users = []
-// app.use('/static', express.static('public'));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.json())
 
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
 
-app.use(
-    session({
-        secret: "user session"
-    })
-)
+// module.exports = connection;
+//untuk menampilkan seluruh daftar mahasiswa
+exports.users = function(req, res) {
+    connection.query('SELECT * FROM mahasiswa', function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+exports.authlog = function(req, res){
 
-app.set('view engine', 'ejs')
+    var nrp = req.body.nrp;
+    var password = req.body.password;
+    if (nrp && password) {
+        connection.query('SELECT * FROM mahasiswa WHERE nrp = ? AND password = ?', [nrp, password], function(error, results, fields) {
+            //console.log(results);
+            if (results.length > 0) {
+                req.session.loggedin = true;
+                req.session.nrp = nrp;
+                // req.session.nama = nama;
+                Object.keys(results).forEach(function(key) {
+                    var row = results[key];
+                    req.session.nama = row.nama;
+                    console.log(row.nama + " berhasil login")
+                });
+                //console.log(results);
 
-app.get('/', checkSignIn, (req, res) => {
-    //console.log(Users)
-    agent.get(host)
-        .then(
-            (response) => {
-                request(host, function (error, response1, body) {
-                    if (!error && response1.statusCode == 200) {
-                        var info = JSON.parse(body)
-                        var size = Object.keys(info.user).length
-                        var i;
-                        var nama;
-                        for (i = 0; i < size; i++) {
-                            if (info.mahasiswa[i].nrp == req.session.mahasiswa.nrp) {
-                                nama = info.mahasiswa[i].nama;
-                                console.log(nama);
-                                break;
-                            }
-
-                        }
-                        //console.log(response.body.matkul)
-                        res.render('home.ejs', { nrp: req.session.mahasiswa.nrp, nama: nama })
-                    }
-                })
-            }
-        )
-})
-
-app.get('/login', (req, res) => {
-    if (req.session.error != null) {
-        // console.log(req.session.error);
-        req.session.error = null;
-        res.render('login.ejs', { message: "hai" })
-
+                res.redirect('/home');
+            } else {
+                res.send('NRP atau Password salah!');
+            }           
+            res.end();
+        });
+    } else {
+        res.send('Mohon masukkan NRP dan password anda!');
+        res.end();
     }
-    else {
-        res.render('login.ejs', { message: "" })
+};
+
+exports.succlogin = function(req, res){
+    if (req.session.loggedin) {
+        res.render('home.ejs',{nama:req.session.nama});
+        console.log(req.session.nama);
+        } else {
+            res.render('failed_login.ejs');
     }
+    res.end();
 
-})
+};
 
-app.get('/register', (req, res) => {
-    res.render('register.ejs')
-})
-
-app.post('/register', (req, res) => {
-    let nrp = req.body['nrp']
-    let nama = req.body['nama']
-    let password = req.body['password']
-
-    agent.post(apiHost + '/tambahmahasiswa')
-        .send({
-            nrp: nrp,
-            nama: nama,
-            password: password
-        })
-        .then(
-            (response) => {
-                if (response.status == 201) {
-                    res.redirect('/login')
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-            }
-        )
-})
-
-app.post('/login', (req, res) => {
-    let nrp = req.body['nrp']
-    let password = req.body['password']
-    console.log(nrp)
-    agent.post(apiHost + '/user')
-        .send({
-            nrp: nrp,
-            password: password
-        })
-        .then(
-            (response) => {
-                console.log(response.status)
-                if (response.status == 200) {
-                    let newUser = { nrp: nrp, password: password };
-                    Users.push(newUser);
-                    req.session.user = newUser;
-                    res.redirect('/')
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-                req.session.error = 'Incorrect username or password';
-                res.redirect('/login');
-            }
-        )
-})
-
-app.post('/absen', (req, res) => {
-    let ruang = req.body['ruang']
-    let nrp = req.body['nrp']
-    let time = req.body['time']
-
-    agent.post(apiHost + '/absen')
-        .send({
-            ruang: ruang,
-            nrp: nrp,
-            time: time
-        })
-        .then(
-            (response) => {
-                if (response.status == 200) {
-                    // req.flash('msg', 'some msg');
-                    res.redirect('/')
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-            }
-        )
-})
-app.get('/jadwal', (req, res) => {
-    if (req.session.user == null) {
-        req.session.error = "Login";
-        res.redirect('/login');
-    }
-    else {
-        request(apiHost, function (error, response1, body) {
-            if (!error && response1.statusCode == 200) {
-                var info = JSON.parse(body)
-                var size = Object.keys(info.user).length
-                var i;
-                var nama;
-                for (i = 0; i < size; i++) {
-                    if (info.user[i].nrp == req.session.user.nrp) {
-                        nama = info.user[i].nama;
-                        console.log(nama);
-                        break;
-                    }
-                }
-                res.render('jadwal.ejs', { nrp: req.session.user.nrp, nama: nama })
-            }
-        })
-    }
-
-})
-
-app.post('/jadwal', (req, res) => {
-    let id = req.body['idMatkul']
-    let pertemuan = req.body['pertemuan']
-    let kelas = req.body['kelas']
-    let masuk = req.body['masuk']
-    let selesai = req.body['selesai']
-
-    console.log(masuk)
-    console.log(selesai)
-
-    let angka = parseInt(pertemuan, 10)
-
-    agent.post(apiHost + '/tambahjadwal')
-        .send({
-            idmatkul: id,
-            pertemuanke: angka,
-            ruangkelas: kelas,
-            jammasuk: masuk,
-            jamselesai: selesai
-        })
-        .then(
-            (response) => {
-
-                if (response.status == 201) {
-                    res.redirect('/jadwal');
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-                res.redirect('/jadwal');
-            }
-        )
-})
-app.get('/tambahmatkul', (req, res) => {
-    if (req.session.user == null) {
-        req.session.error = "Login";
-        res.redirect('/login');
-    }
-    else {
-        request(apiHost, function (error, response1, body) {
-            if (!error && response1.statusCode == 200) {
-                var info = JSON.parse(body)
-                var size = Object.keys(info.user).length
-                var i;
-                var nama;
-                for (i = 0; i < size; i++) {
-                    if (info.user[i].nrp == req.session.user.nrp) {
-                        nama = info.user[i].nama;
-
-                        break;
-                    }
-                }
-                res.render('tambahmatkul.ejs', { nrp: req.session.user.nrp, nama: nama })
-            }
-        })
-    }
-
-})
-app.post('/tambahmatkul', (req, res) => {
-    let idMatkul = req.body['idMatkul']
-    let namaMatkul = req.body['namaMatkul']
-    let kelas = req.body['kelas']
-    agent.post(apiHost + '/tambahmatkul')
-        .send({
-            idmatkul: idMatkul,
-            namamatkul: namaMatkul,
-            kelas: kelas
-        })
-        .then(
-            (response) => {
-                if (response.status == 201) {
-                    res.redirect('/')
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-            }
-        )
-})
-app.post('/tambahpeserta', (req, res) => {
-    let idmatkul = req.body['idmatkul']
-    let smt = req.body['smt']
-    let nrp = req.body['nrp']
-
-    agent.post(apiHost + '/tambahpeserta')
-        .send({
-            idmatkul: idmatkul,
-            smt: smt,
-            nrp: nrp
-        })
-        .then(
-            (response) => {
-                if (response.status == 201) {
-                    res.redirect('/')
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-            }
-        )
-})
-app.post('/rekap', (req, res) => {
-    let idmatkul = req.body['idmatkul']
-    agent.get(apiHost + '/rekap/' + idmatkul)
-        .then(
-            (response) => {
-
-                if (response.status == 200) {
-                    console.log(response.body)
-                    res.render('rekapsemeter.ejs', { isi: response.body, nrp: req.session.user.nrp })
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-            }
-        )
-})
-
-app.post('/rekapsemua', (req, res) => {
-    let nrp = req.body['nrp']
-    let semester = req.body['semester']
-    agent.get(apiHost + '/rekapmahasiswa/' + nrp + '/' + semester)
-        .then(
-            (response) => {
-
-                if (response.status == 200) {
-                    console.log(response.body)
-                    res.render('rekaptotal.ejs', { isi: response.body })
-                }
-            }
-        )
-        .catch(
-            (err) => {
-                console.log(err)
-            }
-        )
-})
-
-app.get('/keluar', (req, res) => {
-    req.session.destroy();
+exports.logout = function(req, res){
+    req.session.loggedin=false;
     res.redirect('/login');
-})
-app.listen(3000, () => {
-    console.log("Start")
-})
-
-function checkSignIn(req, res, next) {
-    if (req.session.user) {
-        return next();
-    }
-    else {
-        res.redirect('/login')
-    }
 }
-//https://pbkk-online-absen-api.herokuapp.com
+exports.index = function(req, res) {
+    response.ok("Node JS RESTful side for Online Attendance!", res)
+};
+
+exports.findKuliah = function(req, res) {
+    
+    var kode_matkul = req.params.kode_mk;
+
+    connection.query('SELECT DISTINCT m.nama, mk.nama_matkul, j.pertemuan_ke, l.status FROM mata_kuliah mk, mahasiswa m, jadwal_kelas j, log_absen l, peserta p where m.nrp=l.nrp and j.kode_matkul=mk.kode_matkul and l.id_jadwal=j.id_jadwal and mk.kode_matkul = ?',
+    [ kode_matkul ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.findKuliahPert = function(req, res) {
+    
+    var fk_kode_mk = req.params.fk_kode_mk;
+    var id_pertemuan = req.params.id_pertemuan;
+
+    connection.query('SELECT DISTINCT mk.nama_matkul, m.nama, l.status FROM jadwal_kelas j, mahasiswa m, log_absen l, peserta p, mata_kuliah mk where j.kode_matkul=mk.kode_matkul and m.nrp=l.nrp and l.id_jadwal=j.id_jadwal and p.nrp=m.nrp and mk.kode_matkul=? and j.pertemuan_ke=?',
+    [ fk_kode_mk, id_pertemuan ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.findKuliahKode = function(req, res) {
+    
+    var nrp = req.params.nrp;
+    var kode_mk = req.params.kode_mk;
+
+    connection.query('SELECT DISTINCT m.nama, mk.nama_matkul, j.pertemuan_ke, l.status FROM jadwal_kelas j, mahasiswa m, log_absen l, peserta p, mata_kuliah mk where j.kode_matkul=mk.kode_matkul and m.nrp=l.nrp and l.id_jadwal=j.id_jadwal and p.nrp=m.nrp and m.nrp=? and mk.kode_matkul=?',
+    [ nrp, kode_mk ], 
+    function (error, rows, fields){
+        console.log(rows)
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
+exports.findKuliahSmtr = function(req, res) {
+    
+    var nrp = req.params.nrp;
+    var semester = req.params.semester;
+
+    connection.query('SELECT DISTINCT m.nama, mk.nama_matkul, j.pertemuan_ke, l.status FROM jadwal_kelas j, mahasiswa m, log_absen l, peserta p, mata_kuliah mk where j.kode_matkul=mk.kode_matkul and m.nrp=p.nrp and mk.kode_matkul = p.kode_matkul and m.nrp=l.nrp and l.id_jadwal=j.id_jadwal and p.nrp=m.nrp and m.nrp=? and mk.semester=?',
+    [ nrp, semester ], 
+    function (error, rows, fields){
+        //console.log(nrp);
+        if(error){
+            console.log(error)
+        } else{
+            response.ok(rows, res)
+        }
+    });
+};
+
+
+// root.post('/mahasiswa/absensi', function(request, response) {
+//   var id = request.body.id_user;
+//   var matkul = request.body.id_tran_matkul;
+//   var status = request.body.status;
+//   var date = new Date();
+
+//   db.query('INSERT INTO transaksi_user (id_user,id_tran_matkul,waktu,status) values (?,?,?,?)',
+//    [id,matkul,date,status], function (error, results, fields) {
+//     if (error){
+//       console.log(error);
+//     }
+//     response.redirect('/mahasiswa');
+//   });
+// });
+
+
+// root.post('/absen/:ruang/:nrp', function(request, response) {
+//   var ruangan = request.params.ruang;
+//   var nrp_nip = request.params.nrp;
+//   var status = "2";
+//   var date = new Date();
+
+//   db.query('SELECT u.nrp_nip, tm.ruangan,tm.id_tran_matkul FROM daftar_peserta d, matkul m, transaksi_matkul tm, user u WHERE m.id_matkul = d.id_matkul AND u.id_user=d.id_user AND tm.id_matkul = m.id_matkul AND u.nrp_nip=? AND tm.ruangan=?',
+//    [nrp_nip,ruangan], function (error, results, fields) {
+//     if (error){
+//       console.log(error);
+//       response.status(500).json({ error: 'Internal Server Error' });
+//     }
+//     if (results.length == 0 ){
+//       response.status(404).json({ error: 'Peserta tidak terdaftar dalam kelas' });
+//     }else{
+//       console.log(results);
+//       var matkul = results[0].id_tran_matkul;
+//       db.query('INSERT INTO transaksi_user (id_user,id_tran_matkul,waktu,status) values (?,?,?,?)',
+//        [nrp_nip,matkul,date,status], function (error, results, fields) {
+//         if (error){
+//           console.log(error);
+//           res.status(500).json({ error: 'Internal Server Error' });
+//         }else{
+//           res.status(200).json({ OK: 'Berhasil melakukan absensi' });
+//         }
+//       });
+//     }
+//   });
+// });
+
+exports.createUsers = function(req, res) {
+    
+    var nrp = req.body.nrp;
+    var nama = req.body.nama;
+    var password = req.body.password;
+
+    connection.query('INSERT INTO mahasiswa (nrp,nama,password) values (?,?,?)',
+    [ nrp, nama, password ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok("Berhasil menambahkan Mahasiswa!", res)
+            //res.redirect('/daftarkls');
+            //console.log("Berhasil menambahkan " + nama_matkul + " pada database");
+        }           
+            //res.end();
+    });
+    
+};
+
+exports.createMatkul = function(req, res) {
+    
+    var kode_matkul = req.body.kode_matkul;
+    var nama_matkul = req.body.nama_matkul;
+    var semester = req.body.semester;
+    connection.query('INSERT INTO mata_kuliah (kode_matkul, nama_matkul, semester) values (?,?,?)',
+    [ kode_matkul, nama_matkul, semester ], 
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok("Berhasil menambahkan Matkul!", res)
+            //res.redirect('/daftarkls');
+            //console.log("Berhasil menambahkan " + nama_matkul + " pada database");
+        }
+    });
+};
+
+exports.createJadwal = function(req, res) {
+    
+    var kode_matkul = req.body.kode_matkul;
+    var pertemuan_ke = req.body.pertemuan_ke;
+    var start = req.body.start;
+    var end = req.body.end;
+    // var ruang = req.body.ruang;
+
+    connection.query('INSERT INTO jadwal_kelas (kode_matkul,pertemuan_ke, start, end) values (?,?,?,?)',
+    [ kode_matkul,pertemuan_ke, start, end],
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok("Berhasil menambahkan Jadwal!", res)
+            //res.redirect('/daftarjadwal');
+            //console.log("Berhasil menambahkan " + kode_matkul + " pada database");
+        }
+    });
+};
+
+exports.createMhsKuliah = function(req, res) {
+    
+    var kode_matkul = req.body.kode_matkul;
+    var nrp= req.body.nrp;
+
+    connection.query('INSERT INTO peserta(nrp, kode_matkul) values (?,?)',
+    [ nrp, kode_matkul],
+    function (error, rows, fields){
+        if(error){
+            console.log(error)
+        } else{
+            response.ok("Berhasil menambahkan Mahasiswa Kuliah!", res)
+            //res.redirect('/daftarpeserta');
+            //console.log("Berhasil menambahkan " + kode_matkul + " pada database");
+        }
+    });
+};
+
+
