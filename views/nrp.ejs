@@ -1,0 +1,49 @@
+<% include partials/header.ejs %>
+<br><br><br>
+<div class="card text-center">
+  <h5 class="card-header">Rekap Matakuliah</h5>
+  <div class="card-body">
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>Mahasiswa <%= rows[0].nama %></h2>
+  <p>Rekap data mahasiswa</p>            
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        
+        <th>Nama Matakuliah</th>
+        <th>Pertemuan Ke</th>
+        <th>Status Kehadiran</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for(var i=0; i < rows.length; i++) { %>
+      <tr>
+        
+        <td><%= rows[i].nama_matkul %></td>
+        <td><%= rows[i].pertemuan_ke %></td>
+        <td><%= rows[i].status %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
+
+  </div>
+</div>
+</body>
+</html>

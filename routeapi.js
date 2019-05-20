@@ -31,4 +31,6 @@ module.exports = function(app) {
 
     app.route('/tambahpeserta')
         .post(absenonline.createMhsKuliah);
+    app.route('/absen')
+        .post(absenonline.absen);
 };

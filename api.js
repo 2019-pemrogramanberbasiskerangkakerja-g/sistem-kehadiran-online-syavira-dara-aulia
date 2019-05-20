@@ -267,4 +267,21 @@ exports.createMhsKuliah = function(req, res) {
     });
 };
 
+exports.absen = function(req, res) {
+    var nrp = req.body.nrp;
+    var id_jadwal = req.body.id_jadwal;
+    var jam_masuk = new Date();
+    var status = req.body.status;
+
+    connection.query('INSERT INTO log_absen(nrp, id_jadwal, jam_masuk, status) values (?,?,?,?)',
+    [nrp, id_jadwal, jam_masuk, status],
+    function (error, rows, fields){
+        if (error) {
+            console.log(error)
+        } else {
+            console.log(nrp + " Berhasil Absen!")
+            response.ok("Berhasil menambahkan Absen Kuliah!", res)
+        }
+    });
+};
 
