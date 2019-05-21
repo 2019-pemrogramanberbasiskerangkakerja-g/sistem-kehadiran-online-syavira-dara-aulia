@@ -36,7 +36,7 @@ Menggunakan Node.js, Express, MySQL database, dan ejs sebagai View Engine-nya
 <ol><code>GET</code>/rekap/idmatakuliah: rekap kuliah per semester</ol>
 <ol><code>GET</code>/rekap/idmatakuliah/pertemuanke: rekap kuliah per pertemuan</ol>
 <ol><code>GET</code>/rekapmahasiswa/nrp/idmatakuliah: rekap mahasiswa per kuliah</ol>
-<ol><code>GET</code>/rekapmahasiswa/nrp/idsemester: rekap mahasiswa per semester</ol>
+<ol><code>GET</code>/rekapmahasiswa2/nrp/idsemester: rekap mahasiswa per semester</ol>
 <ol><code>GET</code>/users: menampilkan user di database</ol>
 <ol><code>POST</code>/tambahmahasiswa (sent via body:nrp,nama, pass): tambah user mahasiswa baru</ol>
 <ol><code>POST</code>/tambahpeserta:(sent via body: id mata kuliah, nrp) tambah user mahasiswa ke mata kuliah</ol>
